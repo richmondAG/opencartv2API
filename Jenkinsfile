@@ -1,11 +1,6 @@
 pipeline {
     agent any
     
-    environment {
-        // Define environment variables for Newman report
-        // NEWMAN_REPORT_FILE = 'newman-report.html'
-    }
-    
     stages {
         stage('Checkout') {
             steps {
