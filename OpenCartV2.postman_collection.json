@@ -1,0 +1,444 @@
+{
+	"info": {
+		"_postman_id": "a120cbe0-2bb9-4cfd-96c3-e1e404b18bee",
+		"name": "OpenCartV2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36628493"
+	},
+	"item": [
+		{
+			"name": "Create Session/Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//capuring response\r",
+							"var jsonData= pm.response.json();\r",
+							"\r",
+							"//Validating JSON response\r",
+							"pm.test(\"Validating Response Body\",()=>{\r",
+							"    pm.expect(jsonData.success).to.eql(\"Success: API session successfully started!\");\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"api_token\", jsonData.api_token);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "demo",
+							"type": "text"
+						},
+						{
+							"key": "key",
+							"value": "SnStnB7CQ864FYcuJczIMFJPfLuqD4UoAhMofPcIH2VlItCLSKOwUqKQqa1IMeRRJPpEokVlhgPYoBWVjlWKkUoxQLAu25fl7OlFVJReamLgECtVLjDaLR1FRrzpsbFtKOIQcKE2EGGizUg5e6YHBKlfVEst3k33GFO5Tl3ClA0mOzyegB5pvDaZqe0VlV10sS6xxjrg3cg3JKXmQB4yLyW4nuXw0VUq8o4jwHwWNvKkZkPlB2ht3vI7zTuNwTfr",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}api/login",
+					"host": [
+						"{{url_base}}api"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add product to cart",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"product_id\", \"40\");\r",
+							"pm.collectionVariables.set(\"quantity\", \"2\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validating Status Code 200\", ()=>{\r",
+							"pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData= pm.response.json();\r",
+							"\r",
+							"pm.test(\"\", ()=>{\r",
+							"pm.expect(jsonData.success).to.eql(\"Success: You have modified your shopping cart!\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "api_token",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{api_token}}",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product_id",
+							"value": "{{product_id}}",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "{{quantity}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}api/cart/add",
+					"host": [
+						"{{url_base}}api"
+					],
+					"path": [
+						"cart",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cart content",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validating Status Code 200\", ()=>{\r",
+							"pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validating Response\", ()=>{\r",
+							"    pm.expect(jsonData.products[0].product_id).to.eql(\"40\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validating Headers Have Content Type\", ()=>{\r",
+							"    pm.response.to.have.header(\"Content-Type\"\r",
+							");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validating Cookies Languege is en-gb\", ()=>{\r",
+							"   pm.expect(pm.cookies.get('language')).to.eql(\"en-gb\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validatin Response Time is Below 200\", ()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"cart_id\",jsonData.products[0].cart_id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "api_token",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{api_token}}",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product_id",
+							"value": "{{product_id}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}api/cart/products",
+					"host": [
+						"{{url_base}}api"
+					],
+					"path": [
+						"cart",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit product quantity to cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validating Status Should be 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validating the Response\", function () {\r",
+							"    pm.expect(jsonData.success).to.eql(\"Success: You have modified your shopping cart!\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validating the Cookies\", ()=>{\r",
+							"    pm.expect(pm.cookies.get(\"language\")).to.eql(\"en-gb\");\r",
+							"}\r",
+							");\r",
+							"\r",
+							"pm.test(\"Validating Headers\", ()=>{\r",
+							"\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"}\r",
+							");\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "api_token",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{api_token}}",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "key",
+							"value": "{{cart_id}}",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}api/cart/edit",
+					"host": [
+						"{{url_base}}api"
+					],
+					"path": [
+						"cart",
+						"edit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove product from cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validating Status Code 200\",()=>{\r",
+							"pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"var jsonData= pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validating the Response\", ()=>{\r",
+							"pm.expect(jsonData.success).to.eql( \"Success: You have modified your shopping cart!\");\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.unset(\"product_id\");\r",
+							"pm.collectionVariables.unset(\"quantity\");\r",
+							"pm.collectionVariables.unset(\"cart_id\");\r",
+							"pm.collectionVariables.unset(\"api_token\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "api_token",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{api_token}}",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "key",
+							"value": "{{cart_id}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}api/cart/remove",
+					"host": [
+						"{{url_base}}api"
+					],
+					"path": [
+						"cart",
+						"remove"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "ip",
+			"value": "192.168.200.3",
+			"type": "string"
+		},
+		{
+			"key": "url_base",
+			"value": "http://{{ip}}/opencart/index.php?route=",
+			"type": "string"
+		}
+	]
+}
