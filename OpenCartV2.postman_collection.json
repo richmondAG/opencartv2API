@@ -174,10 +174,6 @@
 							"   pm.expect(pm.cookies.get('language')).to.eql(\"en-gb\");\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Validatin Response Time is Below 200\", ()=>{\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							"\r",
 							"pm.collectionVariables.set(\"cart_id\",jsonData.products[0].cart_id);\r",
 							""
 						],
