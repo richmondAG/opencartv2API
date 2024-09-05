@@ -1,19 +1,15 @@
 pipeline {
     agent any
+    environment {
+        // Define environment variables for Newman report
+        // NEWMAN_REPORT_FILE = 'newman-report.html'
+    }
     stages {
         stage('Checkout') {
             steps {
                 echo 'Checking out repository...'
                 // Pull the repository containing your Postman collection
                git 'https://github.com/richmondAG/opencartv2API.git'
-            }
-        }
-        
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing Newman...'
-                // Install Newman globally using npm (on Windows)
-                bat 'npm install -g newman'
             }
         }
         
