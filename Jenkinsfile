@@ -11,7 +11,7 @@ pipeline {
             steps {
                 echo 'Checking out repository...'
                 // Pull the repository containing your Postman collection
-                https://github.com/richmondAG/opencartv2API.git
+               git 'https://github.com/richmondAG/opencartv2API.git'
             }
         }
         
